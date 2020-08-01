@@ -1,6 +1,6 @@
 import contextlib
 import logging
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 import click
 import kafka
@@ -34,6 +34,34 @@ RUNNING = True
     help="A comma separated list of Kafka servers",
 )
 @click.option(
+    "--security-protocol",
+    default="PLAINTEXT",
+    envvar="KAFKA_SECURITY_PROTOCOL",
+    type=click.Choice(["PLAINTEXT", "SSL"]),
+    help="Kafka security protocol.",
+)
+@click.option(
+    "--ssl-cafile",
+    default=None,
+    envvar="KAFKA_SSL_CAFILE",
+    type=click.Path(exists=True, dir_okay=False),
+    help="CA file for certificate verification.",
+)
+@click.option(
+    "--ssl-certfile",
+    default=None,
+    envvar="KAFKA_SSL_CERTFILE",
+    type=click.Path(exists=True, dir_okay=False),
+    help="PEM format client certificate.",
+)
+@click.option(
+    "--ssl-keyfile",
+    default=None,
+    envvar="KAFKA_SSL_KEYFILE",
+    type=click.Path(exists=True, dir_okay=False),
+    help="Client private key.",
+)
+@click.option(
     "--topic",
     default="checks",
     envvar="KAFKA_TOPIC",
@@ -51,7 +79,17 @@ RUNNING = True
     envvar="POSTGRES_URI",
     help="A postgresql database uri to connect to",
 )
-def writer(period: float, brokers: str, topic: str, group_id: str, db_uri: str):
+def writer(
+    period: float,
+    brokers: str,
+    security_protocol: str,
+    ssl_cafile: Optional[str],
+    ssl_certfile: Optional[str],
+    ssl_keyfile: Optional[str],
+    topic: str,
+    group_id: str,
+    db_uri: str,
+):
     """Store website availability check results in a Postgres database.
 
     This component reads check results from a Kafka topic and persists the data
@@ -76,6 +114,10 @@ def writer(period: float, brokers: str, topic: str, group_id: str, db_uri: str):
             value_deserializer=value_deserializer,
             auto_offset_reset="earliest",
             enable_auto_commit=False,
+            security_protocol=security_protocol,
+            ssl_cafile=ssl_cafile,
+            ssl_certfile=ssl_certfile,
+            ssl_keyfile=ssl_keyfile,
         )
 
         with contextlib.closing(consumer) as consumer:

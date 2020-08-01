@@ -41,12 +41,50 @@ RUNNING = True
     help="Comma separated list of Kafka servers.",
 )
 @click.option(
+    "--security-protocol",
+    default="PLAINTEXT",
+    envvar="KAFKA_SECURITY_PROTOCOL",
+    type=click.Choice(["PLAINTEXT", "SSL"]),
+    help="Kafka security protocol.",
+)
+@click.option(
+    "--ssl-cafile",
+    default=None,
+    envvar="KAFKA_SSL_CAFILE",
+    type=click.Path(exists=True, dir_okay=False),
+    help="CA file for certificate verification.",
+)
+@click.option(
+    "--ssl-certfile",
+    default=None,
+    envvar="KAFKA_SSL_CERTFILE",
+    type=click.Path(exists=True, dir_okay=False),
+    help="PEM format client certificate.",
+)
+@click.option(
+    "--ssl-keyfile",
+    default=None,
+    envvar="KAFKA_SSL_KEYFILE",
+    type=click.Path(exists=True, dir_okay=False),
+    help="Client private key.",
+)
+@click.option(
     "--topic",
     default="checks",
     envvar="KAFKA_TOPIC",
     help="Kafka topic to produce messages on.",
 )
-def monitor(config: TextIO, period: float, timeout: float, brokers: str, topic: str):
+def monitor(
+    config: TextIO,
+    period: float,
+    timeout: float,
+    brokers: str,
+    security_protocol: str,
+    ssl_cafile: Optional[str],
+    ssl_certfile: Optional[str],
+    ssl_keyfile: Optional[str],
+    topic: str,
+):
     """Periodically check the availability of the given list of websites.
 
     This component periodically makes requests to different websites and sends
@@ -60,7 +98,12 @@ def monitor(config: TextIO, period: float, timeout: float, brokers: str, topic: 
     logger.info("Connecting to brokers %s", brokers)
 
     producer = kafka.KafkaProducer(
-        bootstrap_servers=brokers, value_serializer=value_serializer
+        bootstrap_servers=brokers,
+        value_serializer=value_serializer,
+        security_protocol=security_protocol,
+        ssl_cafile=ssl_cafile,
+        ssl_certfile=ssl_certfile,
+        ssl_keyfile=ssl_keyfile,
     )
 
     with contextlib.closing(producer):
