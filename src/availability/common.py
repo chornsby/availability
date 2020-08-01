@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import datetime
 import enum
-import json
 import uuid
 from typing import Optional, Pattern
 
@@ -50,9 +49,9 @@ class Check(pydantic.BaseModel):
     match: Match
 
 
-def value_serializer(message: dict) -> bytes:
-    return json.dumps(message).encode("utf-8")
+def value_serializer(message: str) -> bytes:
+    return message.encode("utf-8")
 
 
-def value_deserializer(message: bytes) -> dict:
-    return json.loads(message.decode("utf-8"))
+def value_deserializer(message: bytes) -> str:
+    return message.decode("utf-8")
