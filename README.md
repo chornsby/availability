@@ -62,6 +62,26 @@ For example, if your Kafka service requires keyfile authentication then that can
 be passed via environment variable or CLI option. These options can be found by
 passing the `--help` option to the scripts.
 
+e.g.
+
+```sh
+availability-monitor \
+  example.tsv \
+  --brokers <KAFKA_URL> \
+  --security-protocol SSL \
+  --ssl-cafile ca.pem \
+  --ssl-certfile service.cert \
+  --ssl-keyfile service.key
+
+availability-writer \
+  --brokers <KAFKA_URI> \
+  --security-protocol SSL \
+  --ssl-cafile ca.pem \
+  --ssl-certfile service.cert \
+  --ssl-keyfile service.key \
+  --db-uri <POSTGRES_URI>
+```
+
 ### Dependencies
 
 Python dependencies can be managed using the `.in` files in the `requirements/`
