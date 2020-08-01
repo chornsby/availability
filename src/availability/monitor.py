@@ -109,8 +109,17 @@ def monitor(
         with concurrent.futures.ThreadPoolExecutor() as executor:
             while RUNNING:
                 logger.info("Starting monitoring round")
+                start = datetime.datetime.utcnow()
+
                 run(targets, timeout, topic, executor, producer)
-                time.sleep(period)
+
+                next_start = start + datetime.timedelta(seconds=period)
+                sleep = next_start - datetime.datetime.utcnow()
+
+                if sleep < datetime.timedelta(seconds=0):
+                    logger.warning("Checks took longer than %s seconds to run", period)
+                else:
+                    time.sleep(sleep.total_seconds())
 
 
 def run(
