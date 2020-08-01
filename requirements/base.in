@@ -1,0 +1,5 @@
+click
+kafka-python
+psycopg2-binary
+pydantic
+requests
