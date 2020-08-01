@@ -14,8 +14,6 @@ from .common import Check, value_deserializer
 logger = logging.getLogger(__name__)
 psycopg2.extras.register_uuid()
 
-# TODO: Consider table partitioning
-
 RUNNING = True
 
 

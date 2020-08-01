@@ -94,6 +94,16 @@ lock files are constructed from them using
 Tests run automatically and calculate code coverage on push using GitHub
 Actions.
 
+### Known issues
+
+The `checks` table in Postgres will quickly grow large if many websites are
+checked with a high frequency. This could be improved by using table
+partitioning by date or by truncating or summarising old data as it becomes less
+relevant.
+
+Tests require running services for integration style tests which can be slow to
+run and harder to make reliable.
+
 ## Acknowledgements
 
 - https://stackoverflow.com/questions/51398235/specify-ssl-details-for-kafka-brokers-in-python
