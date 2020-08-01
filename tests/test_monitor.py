@@ -3,9 +3,9 @@ import pathlib
 from unittest import mock
 
 import kafka
+import pytest
 import requests
 import requests_mock
-import pytest
 
 from availability import monitor
 from availability.common import Check, Match, value_deserializer

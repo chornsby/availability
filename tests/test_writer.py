@@ -2,10 +2,10 @@ import contextlib
 import uuid
 from unittest import mock
 
+import kafka
 import psycopg2
 import psycopg2.extras
 import pytest
-import kafka
 
 from availability import writer
 from availability.common import Check, Match, value_serializer
@@ -128,6 +128,7 @@ def test_duplicate_messages(postgres_uri):
 
 def test_invalid_messages():
     """Should ignore messages containing invalid or unparseable data."""
+
     class ConsumerRecord:
         value: str = '{"request_id": "asd'  # Incomplete JSON
 
