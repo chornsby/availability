@@ -3,7 +3,7 @@
 An availability monitor for websites that submits metrics to a Kafka topic and
 loads them into a Postgres database.
 
-![Python package](https://github.com/chornsby/activity/workflows/Python%20package/badge.svg)
+![Python package](https://github.com/chornsby/availability/workflows/Python%20package/badge.svg)
 
 ## Development setup
 
