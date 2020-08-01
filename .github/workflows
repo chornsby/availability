@@ -1,0 +1,24 @@
+name: Python package
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up services
+        run: docker-compose up -d
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+      - name: Install tox
+        run: pip install tox
+      - name: Run tox
+        env:
+          KAFKA_BROKERS: localhost:9092
+          POSTGRES_URI: postgres://postgres:donotuseinproduction123@localhost:5432
+        run: tox
