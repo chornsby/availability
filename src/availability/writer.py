@@ -15,7 +15,6 @@ logger = logging.getLogger(__name__)
 psycopg2.extras.register_uuid()
 
 # TODO: Consider table partitioning
-# TODO: Configure logging
 
 RUNNING = True
 
@@ -121,15 +120,15 @@ def writer(
         )
 
         with contextlib.closing(consumer) as consumer:
-            logger.info("Waiting for messages")
-
             while RUNNING:
+                logger.info("Waiting for messages")
                 topic_to_records = consumer.poll(timeout_ms=period_ms, max_records=100)
                 checks = parse_topic_records(topic_to_records)
 
                 if not checks:
                     continue
 
+                logger.info("Storing %s messages", len(checks))
                 store_checks(conn, checks)
 
                 # For at-least-once delivery we commit the offset only after

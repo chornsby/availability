@@ -1,4 +1,3 @@
-# TODO: Configure logging
 import concurrent.futures
 import contextlib
 import datetime
@@ -109,6 +108,7 @@ def monitor(
     with contextlib.closing(producer):
         with concurrent.futures.ThreadPoolExecutor() as executor:
             while RUNNING:
+                logger.info("Starting monitoring round")
                 run(targets, timeout, topic, executor, producer)
                 time.sleep(period)
 
