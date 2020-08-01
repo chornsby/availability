@@ -121,7 +121,6 @@ def writer(
 
         with contextlib.closing(consumer) as consumer:
             while RUNNING:
-                logger.info("Waiting for messages")
                 topic_to_records = consumer.poll(timeout_ms=period_ms, max_records=100)
                 checks = parse_topic_records(topic_to_records)
 
